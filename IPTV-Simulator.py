@@ -28,12 +28,12 @@ mac = getMac()
 uproxyServer = ''
 
 # 服务器和用户信息，全部都可以由抓包获取到
-Server = ''
-UserID = ''
-STBID = ''
-STBType = ''
-STBVersion = ''
-UserAgent = ''
+Server = '' # 填写 IPTV 盒子首次交互的服务器 IP和端口，例如: 1.1.1.1:8888
+UserID = '' # 填写 IPTV 账号
+STBID = '' # 填写机顶盒 STBID 信息，通常在机顶盒背部贴纸，也可在抓包信息里找
+STBType = '' # 填写机顶盒型号，根据抓包信息填写
+STBVersion = '' # 填写机顶盒版本号，根据抓包信息填写
+UserAgent = '' # UA 头在抓包信息里找
 
 # 首次运行前请填写 Authenticator，并使用 find_key(Authenticator) 函数爆破 Key 值
 Authenticator = ''

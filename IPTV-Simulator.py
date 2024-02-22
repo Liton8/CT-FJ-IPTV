@@ -24,8 +24,8 @@ rand = ''  # 通过反解key得到，建议多次抓包确定是否为随机值�
 ip = getIp()
 mac = getMac()
 
-# 设置本地 uproxy 转发地址
-uproxyServer = ''
+# 设置本地 udpxy 转发地址
+udpxyServer = ''
 
 # 服务器和用户信息，全部都可以由抓包获取到
 Server = '' # 填写 IPTV 盒子首次交互的服务器 IP和端口，例如: 1.1.1.1:8888
@@ -286,7 +286,7 @@ def get_channels(key):
     ftxt.write(date_now)
     ftxt.write('%s\t%s\t%s\t%s\n' % ('频道ID', '频道名称', '组拔地址', '回放地址'))
     for channel in channels:
-        m3uline = '#EXTINF:-1 ,%s\nhttp://%s/udp/%s\n'%(channel[1], uproxyServer, channel[3])
+        m3uline = '#EXTINF:-1 ,%s\nhttp://%s/udp/%s\n'%(channel[1], udpxyServer, channel[3])
         txtline = '%s\t%s\t%s\t%s\n' % (channel[0], channel[1], channel[3], channel[5])
         fm3u.write(m3uline)
         ftxt.write(txtline)

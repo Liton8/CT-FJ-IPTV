@@ -42,7 +42,6 @@ Authenticator = ''
 save_dir_m3u = os.getcwd()+'/iptv.m3u'
 ##################################################  以上为必要的信息  ##################################################
 
-
 date_now = time.strftime('%Y-%m-%d %X',time.localtime())
 BS = DES3.block_size
 
@@ -241,12 +240,19 @@ def getChannelList(finalURL, MAIN_WIN_SRC, urlFourth, cookies):
             time.sleep(3)
     res.encoding = 'gb2312'
 
-    allChannels = re.findall('ChannelName[\=][\"](.+?)[\"].+?ChannelURL[\=][\"]igmp://(.+?)\",', res.text)
+    with open(os.getcwd() + '/builder.txt', 'w') as buildFile:
+        buildFile.write(res.text)
+
+    allChannels = re.findall('ChannelID[\=][\"](.*?)[\"],ChannelName[\=][\"](.+?)[\"],UserChannelID[\=][\"](\d+)[\"],ChannelURL[\=][\"]igmp://(.+?)[\"],TimeShift\=\"(\d+)\",.+?TimeShiftURL[\=][\"](.+?)[\"],.+?TimeShiftLength[\=][\"](\d+)[\"]', res.text)
     channels = []
     for channel in allChannels:
         channel = list(channel)
+        if re.search("聚鲨", channel[1]) or re.search("购物", channel[1]):
+            continue
+        url_re = re.match('(.+?\.sdp)?', channel[5])
+        channel[5] = url_re.group(1)
         channels.append(channel)
-    print('共获取频道数量为：%s, M3U 文件存储于当前目录的: %s 文件.'%(len(channels), save_dir_m3u))
+    print('共获取频道数量为：%s, M3U 文件存储于当前目录的: %s 文件, TXT 文件存储于当前目录的: %s 文件.'%(len(channels), save_dir_m3u, save_dir_txt))
     return channels
 
 # 获取节目单的主函数
@@ -273,13 +279,19 @@ def get_channels(key):
     # 获取频道列表
     channels = getChannelList(finalURL, MAIN_WIN_SRC, urlFourth, cookies)
 
-    fm3u = open(save_dir_m3u,'w')
+    fm3u = open(save_dir_m3u, 'w')
+    ftxt = open(save_dir_txt, 'w')
     m3uline1 = '#EXTM3U\n'
     fm3u.write(m3uline1)
+    ftxt.write(date_now)
+    ftxt.write('%s\t%s\t%s\t%s\n' % ('频道ID', '频道名称', '组拔地址', '回放地址'))
     for channel in channels:
-        m3uline = '#EXTINF:-1 ,%s\nhttp://%s/udp/%s\n'%(channel[0], uproxyServer, channel[1])
+        m3uline = '#EXTINF:-1 ,%s\nhttp://%s/udp/%s\n'%(channel[1], uproxyServer, channel[3])
+        txtline = '%s\t%s\t%s\t%s\n' % (channel[0], channel[1], channel[3], channel[5])
         fm3u.write(m3uline)
+        ftxt.write(txtline)
     fm3u.close()
+    ftxt.close()
 
 # 爆破 Key 的函数，可能获取到多个，任意一个都是可用的
 def find_key(Authenticator):

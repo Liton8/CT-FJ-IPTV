@@ -40,6 +40,7 @@ Authenticator = ''
 
 # 设置生成m3u列表文件的存放路径
 save_dir_m3u = os.getcwd()+'/iptv.m3u'
+save_dir_txt = os.getcwd()+'/iptv.txt'
 ##################################################  以上为必要的信息  ##################################################
 
 date_now = time.strftime('%Y-%m-%d %X',time.localtime())
